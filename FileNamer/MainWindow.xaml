@@ -1,0 +1,117 @@
+﻿<Window x:Class="FileNamer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileNamer"
+        mc:Ignorable="d"
+        Title="File Namer" Height="450" Width="800">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Vertical" Margin="5">
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Location:" VerticalAlignment="Center"></TextBlock>
+                <TextBox Grid.Column="1" Margin="5 0" Name="txtLocation"/>
+                <Button Grid.Column="2" Click="Browse_OnClick">
+                    <TextBlock Text="Browse..." Margin="5 2" VerticalAlignment="Center"/>
+                </Button>
+            </Grid>
+
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <GroupBox Grid.Column="0" Header="Prefix">
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="25"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Prefix -->
+                        <TextBlock Grid.Column="0" Grid.Row="0" Text="Prefix:" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Grid.Row="0" Height="20" Margin="5 0"/>
+                        <!-- Starting Number -->
+                        <TextBlock Grid.Column="0" Grid.Row="1" Text="Starting Number:" Height="20"/>
+                        <TextBox Grid.Column="1" Grid.Row="1" Height="20" Margin="5 0" Text="1"/>
+                        <!-- Number Increment -->
+                        <TextBlock Grid.Column="0" Grid.Row="2" Text="Number Increment:" Height="20"/>
+                        <TextBox Grid.Column="1" Grid.Row="2" Height="20" Margin="5 0" Text="1"/>
+                        <!-- Number Format -->
+                        <TextBlock Grid.Column="0" Grid.Row="3" Text="Number Format:" Height="20"/>
+                        <TextBox Grid.Column="1" Grid.Row="3" Height="20" Margin="5 0" Text="00"/>
+                    </Grid>
+                </GroupBox>
+
+
+                <GroupBox Grid.Column="1" Header="Deprecation" Margin="5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="25"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Beginning -->
+                        <TextBlock Grid.Column="0" Grid.Row="0" Text="Beginning:" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Grid.Row="0" Height="20" Margin="5 0"/>
+                        <!-- Ending -->
+                        <TextBlock Grid.Column="0" Grid.Row="1" Text="Ending:" Height="20"/>
+                        <TextBox Grid.Column="1" Grid.Row="1" Height="20" Margin="5 0"/>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+
+            <GroupBox  Header="Replace">
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="25"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Search for -->
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Search for:" Height="20"/>
+                    <TextBox Grid.Column="1" Grid.Row="0" Height="20" Margin="5 0"/>
+                    <!-- Replace With -->
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Replace with:" Height="20"/>
+                    <TextBox Grid.Column="1" Grid.Row="1" Height="20" Margin="5 0"/>
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+
+
+        <ListBox Grid.Row="1" Margin="5" Name="lstFileList"></ListBox>
+
+    </Grid>
+
+
+</Window>
