@@ -1,0 +1,239 @@
+﻿<Window x:Class="FileNamer.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileNamer"
+        mc:Ignorable="d"
+        x:Name="FileNamer"
+        xmlns:dd="urn:gong-wpf-dragdrop"
+        Title="File Namer" Height="700" Width="600" Topmost="{Binding ElementName=MenuItemAlwaysOnTop, Path=IsChecked}">
+    <Window.Resources>
+        <!-- ReSharper disable once MarkupAttributeTypo -->
+        <CollectionViewSource x:Key="FilesView" Source="{Binding ElementName=FileNamer, Path=FileList}" Filter="FilesView_OnFilter"/>
+    </Window.Resources>
+
+
+    <DockPanel>
+
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="Always on top" IsChecked="True" IsCheckable="True" Name="MenuItemAlwaysOnTop"/>
+                <MenuItem Header="Exit" Click="Exit_OnMouseLeftButtonUp"/>
+            </MenuItem>
+        </Menu>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Vertical" Margin="5">
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="Location:" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5 0" Name="txtLocation" VerticalContentAlignment="Center" KeyUp="LocationChanged_OnKeyUp"/>
+                    <Button Grid.Row="0" Grid.Column="2" Click="Browse_OnClick">
+                        <TextBlock Text="Browse..." Margin="5 2" VerticalAlignment="Center"/>
+                    </Button>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="Directory location not found" Foreground="Red" Visibility="Collapsed" Name="txtFileLocationError"/>
+                </Grid>
+
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Prefix GroupBox -->
+                    <GroupBox Grid.Column="0" Header="Prefix" Margin="2 0">
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25"/>
+                                <RowDefinition Height="25"/>
+                                <RowDefinition Height="25"/>
+                                <RowDefinition Height="25"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Prefix -->
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Prefix:" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="1" Grid.Row="0" Height="20" Margin="5 0" Name="txtPrefix"/>
+                            <!-- Starting Number -->
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Starting Number:" Height="20"/>
+                            <TextBox Grid.Column="1" Grid.Row="1" Height="20" Margin="5 0" Text="1" Name="txtPrefixStartingNumber"/>
+                            <!-- Number Increment -->
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="Number Increment:" Height="20"/>
+                            <TextBox Grid.Column="1" Grid.Row="2" Height="20" Margin="5 0" Text="1" Name="txtPrefixIncrementNumber"/>
+                            <!-- Number Format -->
+                            <TextBlock Grid.Column="0" Grid.Row="3" Text="Number Format:" Height="20"/>
+                            <TextBox Grid.Column="1" Grid.Row="3" Height="20" Margin="5 0" Text="00" Name="txtPrefixNumberFormat"/>
+                        </Grid>
+                    </GroupBox>
+
+                    <!-- Deprecation GroupBox -->
+                    <GroupBox Grid.Column="1" Header="Deprecation" Margin="2 0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25"/>
+                                <RowDefinition Height="25"/>
+                                <RowDefinition Height="25"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Beginning -->
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Beginning:" VerticalAlignment="Center" />
+                            <TextBox Grid.Column="1" Grid.Row="0" Height="20" Margin="5 0" Name="txtRemoveBeginningCharacters"/>
+                            <!-- Ending -->
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Ending:" Height="20"/>
+                            <TextBox Grid.Column="1" Grid.Row="1" Height="20" Margin="5 0" Name="txtRemoveEndingCharacters"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+
+                <GroupBox Header="Replace" Width="250">
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25"/>
+                            <RowDefinition Height="25"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Search for -->
+                        <TextBlock Grid.Column="0" Grid.Row="0" Text="Search for:" Height="20"/>
+                        <TextBox Grid.Column="1" Grid.Row="0" Height="20" Margin="5 0" Name="txtReplaceSearch"/>
+                        <!-- Replace With -->
+                        <TextBlock Grid.Column="0" Grid.Row="1" Text="Replace with:" Height="20"/>
+                        <TextBox Grid.Column="1" Grid.Row="1" Height="20" Margin="5 0" Name="txtReplaceWith"/>
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+
+
+
+            <!-- Filter File Types -->
+            <Grid Grid.Row="1" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" Text="Filter:"/>
+                <ComboBox Grid.Column="1" Grid.Row="0" Name="ComboboxFilter" Width="100" DisplayMemberPath="FilterType" SelectedValuePath="FilterID" SelectionChanged="File_Filter_OnSelectionChanged" Margin="5"/>
+
+                <TextBlock Grid.Column="2" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" >
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}Showing {0} out of {1} items">
+                            <Binding ElementName="DataGrid_Files" Path="Items.Count" />
+                            <Binding ElementName="FileNamer" Path="FileList.Count" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+
+
+                <!-- Files Grid -->
+                <DataGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Name="DataGrid_Files" ItemsSource="{Binding Source={StaticResource FilesView}}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" AutoGenerateColumns="False" CanUserAddRows="False" CellEditEnding="FileName_OnCellEditEnding" KeyUp="GridViewFiles_OnKeyUp" AllowDrop="True" SelectionMode="Extended" >
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                                    <Setter Property="Background" Value="#CFCFCF"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsEnabled, UpdateSourceTrigger=PropertyChanged}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+
+
+                        <DataGridTextColumn Header="Original Name" Width="230" x:Name="clmOriginalFileName" Binding="{Binding OriginalFileName}" IsReadOnly="True"/>
+
+                        <DataGridTemplateColumn Header="New File Name" Width="230" x:Name="clmPreviewfile" SortMemberPath="PreviewFileName">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox Text="{Binding PreviewFileName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" LostFocus="PreviewFileName_OnLostFocus" GotFocus="PreviewFileName_OnGotFocus">
+                                        <TextBox.Style>
+                                            <Style TargetType="TextBox">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                                                        <Setter Property="Background" Value="#D9D9D9"/>
+                                                    </DataTrigger>
+                                                    <Trigger Property="IsFocused" Value="True">
+                                                        <Setter Property="Background" Value="White"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTextColumn IsReadOnly="True" Header="File Type" Width="60" Binding="{Binding FileInfo.Extension}"/>
+
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+
+
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Margin="5" Width="100" HorizontalAlignment="Left" Click="Exit_OnMouseLeftButtonUp">
+                    <TextBlock Text="Exit"/>
+                </Button>
+
+                <TextBlock Grid.Column="1" Name="txtFilesInfo" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15" Foreground="LimeGreen"/>
+
+                <Button Grid.Column="2" Margin="5" Width="100" HorizontalAlignment="Right" Click="Rename_OnClick" >
+                    <TextBlock Text="Rename"/>
+                </Button>
+            </Grid>
+
+
+        </Grid>
+
+
+    </DockPanel>
+
+
+
+</Window>
